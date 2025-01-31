@@ -1,0 +1,17 @@
+{
+  "name": "HanZi Writer Integration for logseq",
+  "version": "0.0.1",
+  "description": "Add HanZi Writer to logseq",
+  "main": "index.html",
+  "author": "Aku",
+  "license": "MIT",
+  "logseq": {
+    "id": "hanzi-writer-integration",
+    "title": "HanZi Writer Integration",
+    "main": ".index.html",
+    "icon": "./logo.gif"
+  },
+  "dependencies": {
+    "hanzi-writer": "^3.7.2"
+  }
+}
