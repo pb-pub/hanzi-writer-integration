@@ -1,6 +1,6 @@
 {
   "name": "logseq-hanzi-writer-integration",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Add HanZi Writer to logseq",
   "main": "index.html",
   "author": "Aku",
