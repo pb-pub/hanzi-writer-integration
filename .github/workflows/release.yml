@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write  # Ensure the token has write permissions for contents
+
 jobs:
   release:
     runs-on: ubuntu-latest
