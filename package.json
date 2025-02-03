@@ -11,7 +11,7 @@
     "prebuild": "npm run clean"
   },
   "logseq": {
-    "id": "hanzi-writer-integration",
+    "id": "logseq-hanzi-writer-integration",
     "title": "HanZi Writer Integration",
     "main": ".index.html",
     "icon": "./logo.gif"
