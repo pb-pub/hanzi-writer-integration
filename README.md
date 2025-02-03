@@ -40,7 +40,7 @@ MIT License
 
 ## Author 
 
-[PB](https://github.com/pb-pub)
+Aku
 
 ## 🌟 Acknowledgements
 
