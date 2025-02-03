@@ -6,9 +6,7 @@
   "author": "Aku",
   "license": "MIT",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html index.js dist/",
-    "clean": "rm -rf dist",
-    "prebuild": "npm run clean"
+    "build": ""
   },
   "logseq": {
     "id": "logseq-hanzi-writer-integration",
