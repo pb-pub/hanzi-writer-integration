@@ -1,9 +1,13 @@
 name: Release Plugin
 
+
+permissions:
+  contents: write  # Ensure the token has write permissions for contents
+
 on:
   push:
-    branches:
-      - "main"
+    tags:
+      - "v*"
   workflow_dispatch:
 
 jobs:
