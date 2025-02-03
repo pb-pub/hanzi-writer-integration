@@ -1,15 +1,14 @@
 name: Release Plugin
 
-
-permissions:
-  contents: write  # Ensure the token has write permissions for contents
-
 on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
+      workflow_dispatch:
 
+permissions:
+  contents: write  # Ensure the token has write permissions for contents
+        
 jobs:
   release:
     runs-on: ubuntu-latest
