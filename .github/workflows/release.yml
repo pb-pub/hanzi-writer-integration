@@ -4,26 +4,38 @@ on:
   push:
     tags:
       - "v*"
-      workflow_dispatch:
+  workflow_dispatch:
 
 permissions:
   contents: write  # Ensure the token has write permissions for contents
-        
+
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-      - run: npm ci
-      - run: npm run build
-      - uses: montudor/action-zip@v1
-        with:
-          args: zip -qq -r logseq-hanzi-writer-integration.zip dist README.md package.json LICENSE logo.gif demo.gif
-      - name: Release
-        run: npx semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build
+      run: npm run build
+      
+    - name: Zip Release
+      uses: montudor/action-zip@v1
+      with:
+        args: zip -qq -r logseq-hanzi-writer-integration.zip dist README.md package.json LICENSE logo.gif demo.gif
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: logseq-hanzi-writer-integration.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
