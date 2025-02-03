@@ -1,12 +1,12 @@
 {
   "name": "logseq-hanzi-writer-integration",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Add HanZi Writer to logseq",
   "main": "index.html",
   "author": "Aku",
   "license": "MIT",
   "scripts": {
-    "build": "mkdir -p dist && cp index.html index.js logo.gif dist/",
+    "build": "mkdir -p dist && cp index.html index.js logo.gif package.json dist/",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean"
   },
