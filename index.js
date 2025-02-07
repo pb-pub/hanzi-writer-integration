@@ -180,6 +180,51 @@ function main() {
     renderQuiz(hanziArray, quizId);
   });
 
+  
+
+  logseq.Editor.registerSlashCommand(
+    'pinyin',
+    async () => {
+
+      // Get every character behind the cursor until not a hanzi
+      const cursor = await logseq.Editor.getEditingCursorPosition();
+      const blockContent = await logseq.Editor.getEditingBlockContent();
+
+
+      let end = cursor.pos - 1;
+      
+      let start = cursor.pos - 2;
+      while(start >= 0 && isHanzi(blockContent.charAt(start))) {
+        // console.log("is a hanzi: " + blockContent.charAt(start));
+        start --;
+      }
+
+      const text = blockContent.substring(start, end);
+      
+      // Determine the correct pinyin function
+      let pinyinFn = null;
+      if (typeof window.pinyin === 'function') {
+        pinyinFn = window.pinyin;
+      } else if (window.pinyin && typeof window.pinyin.default === 'function') {
+        pinyinFn = window.pinyin.default;
+      }
+
+      if (!pinyinFn) {
+        logseq.App.showMsg("pinyin library is not available as a function");
+        return;
+      }
+
+      // Call pinyin synchronously
+      const pinyinResult = pinyinFn(text, {
+        style: window.pinyin.STYLE_TONE
+      });
+
+      logseq.App.showMsg(text + " -> " + pinyinResult);
+      logseq.Editor.insertAtEditingCursor(pinyinResult.join(' '));
+    }
+  );
+
+
 }
 
 
@@ -208,10 +253,66 @@ async function renderQuiz(hanziArray, quizId) {
       writerHashMap[quizId].push(writer);
       writer.animateCharacter();
   });
+
+  
+
 }
 
 
+async function renderQuiz(hanziArray, quizId) {
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  writerHashMap[quizId] = [];
+  writerIsQuizMap[quizId] = false;  // Initialize quiz state
+
+  hanziArray.forEach((hanzi, index) => {
+    const quizEl = parent.document.getElementById(`hanzi-quiz-${quizId}-${index}`);
+    if (!quizEl) {
+      logseq.App.showMsg(`Quiz element not found for ${quizId}-${index}`);
+      return;
+    }
+
+    const writer = HanziWriter.create(quizEl, hanzi, {
+      width: height,
+      height: width,
+      padding: padding,
+      renderer: 'canvas',
+      showHintAfterMisses: 3,
+      showOutline: true,
+    });
+
+    writerHashMap[quizId].push(writer);
+    writer.animateCharacter();
+  });
+}
+
+function isHanzi(char) {
+  const code = char.charCodeAt(0);
+
+  // Check for common Hanzi range
+  if (code >= 0x4E00 && code <= 0x9FFF) {
+    return true;
+  }
+
+  // Check for other Hanzi ranges
+  if (code >= 0x3400 && code <= 0x4DBF) {
+    return true;
+  }
+
+  // Check for CJK Unified Ideographs Extension B and beyond
+  if (code >= 0x20000 && code <= 0x2EBEF) {
+    return true;
+  }
+
+  // Check for CJK Compatibility Ideographs
+  if (code >= 0xF900 && code <= 0xFAFF) {
+    return true;
+  }
+
+  return false;
+}
+
 // bootstrap
-if (window.logseq && window.HanziWriter) {
+if (window.logseq && window.HanziWriter && window.pinyin) {
   logseq.ready(main).catch(console.error);
 }

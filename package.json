@@ -1,9 +1,9 @@
 {
   "name": "Hanzi Writer Integration",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Add HanZi Writer to logseq",
   "main": "index.html",
-  "author": "Aku",
+  "author": "pb-pub",
   "license": "MIT",
   "scripts": {
     "build": ""
@@ -13,6 +13,7 @@
     "icon": "./logo.gif"
   },
   "dependencies": {
-    "hanzi-writer": "^3.7.2"
+    "hanzi-writer": "^3.7.2",
+    "pinyin" : "^3.0.0-alpha.6"
   }
 }
