@@ -224,39 +224,14 @@ function main() {
     }
   );
 
-
+  logseq.Editor.registerSlashCommand(
+    'exclude from graph view',
+    async () => {
+      logseq.Editor.insertAtEditingCursor(`exclude-from-graph-view:: true`);
+    }
+  );
 }
 
-
-async function renderQuiz(hanziArray, quizId) {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  writerHashMap[quizId] = [];
-  writerIsQuizMap[quizId] = false;  // Initialize quiz state
-
-  hanziArray.forEach((hanzi, index) => {
-      const quizEl = parent.document.getElementById(`hanzi-quiz-${quizId}-${index}`);
-      if (!quizEl) {
-          logseq.App.showMsg(`Quiz element not found for ${quizId}-${index}`);
-          return;
-      }
-
-      const writer = HanziWriter.create(quizEl, hanzi, {
-          width: height,
-          height: width,
-          padding: padding,
-          renderer: 'canvas',
-          showHintAfterMisses: 3,
-          showOutline: true,
-      });
-
-      writerHashMap[quizId].push(writer);
-      writer.animateCharacter();
-  });
-
-  
-
-}
 
 
 async function renderQuiz(hanziArray, quizId) {
