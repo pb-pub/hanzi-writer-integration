@@ -1,9 +1,10 @@
-import {getTextHanzi} from "./utils/utils.ts";
-import {provideStyles} from "./logseq/styles.ts"
 import "@logseq/libs"
 import HanziWriter from "hanzi-writer";
-
 import pinyin from "pinyin";
+
+import {getTextHanzi} from "./utils/utils.ts";
+import {provideStyles} from "./logseq/styles.ts"
+import { svgExists } from "./utils/hanziSvg.ts";
 
 var padding = 5;
 var width = 200;
@@ -118,6 +119,7 @@ function main() {
     async () => {
       const hanzi = await getTextHanzi();
       logseq.UI.showMsg(hanzi);
+      svgExists(hanzi);
     }
   );
   
