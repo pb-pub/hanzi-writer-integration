@@ -7,31 +7,46 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # Ensure the token has write permissions for contents
+  contents: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        cache: 'npm'
+        node-version: '20'
+        
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
         
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install
       
     - name: Build
-      run: npm run build
+      run: pnpm build
       
-    - name: Zip Release
-      uses: montudor/action-zip@v1
-      with:
-        args: zip -qq -r logseq-hanzi-writer-integration.zip index.js index.html README.md package.json LICENSE logo.gif demo.gif demo_pinyin.gif
+    - name: Prepare Release Files
+      run: |
+        mkdir release
+        cp -r dist/* release/
+        cp package.json release/
+        cp README.md release/
+        cp logo.gif release/
+        cp demo.gif release/
+        cp demo_pinyin.gif release/
+        cp LICENSE release/ || true
+        
+    - name: Create ZIP
+      run: |
+        cd release
+        zip -r ../logseq-hanzi-writer-integration.zip ./*
         
     - name: Create Release
       uses: softprops/action-gh-release@v1
