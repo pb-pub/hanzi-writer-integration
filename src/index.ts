@@ -1,9 +1,10 @@
-import {getTextHanzi} from "./utils/utils.ts";
-import {provideStyles} from "./logseq/styles.ts"
 import "@logseq/libs"
 import HanziWriter from "hanzi-writer";
-
 import pinyin from "pinyin";
+
+import {getTextHanzi} from "./utils/utils.ts";
+import {provideStyles} from "./utils/logseq/styles.ts"
+import { hanziHtml } from "./utils/hanziSvg.ts";
 
 var padding = 5;
 var width = 200;
@@ -115,9 +116,17 @@ function main() {
 
   logseq.Editor.registerSlashCommand(
     "Hanzi image 🈚",
+    
     async () => {
       const hanzi = await getTextHanzi();
-      logseq.UI.showMsg(hanzi);
+      let html = "@@html: <div style='display: flex; flex-direction: row;'>";
+      for (const char of hanzi) {
+        html += await hanziHtml(char, 200, "#888");
+      }
+      
+      html.replace(/\n/g, '');
+      if (html != "@@html: <div style='display: flex; flex-direction: row;'>")
+        logseq.Editor.insertAtEditingCursor(html + "</div> @@");
     }
   );
   
@@ -128,8 +137,6 @@ function main() {
 
       const text = await getTextHanzi();
       
-      
-
       // Call pinyin synchronously
       const pinyinResult = pinyin(text, {
         style: pinyin.STYLE_TONE

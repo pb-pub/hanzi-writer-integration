@@ -10,6 +10,10 @@ A Logseq plugin that integrates [HanziWriter](https://hanziwriter.org/) to provi
 
 ![pinyin_demo](./demo_pinyin.gif)
 
+#### Hanzi svg demo
+
+![Hanzi SVG demo](./demo_hanzi_svg.gif)
+
 ## 🙏 Credits
 
 This plugin uses [HanziWriter](https://hanziwriter.org/), created by [Chanind](https://github.com/chanind). HanziWriter is a free, open-source JavaScript library for Chinese character stroke order animations and quizzes.
@@ -38,6 +42,11 @@ This plugin uses [HanziWriter](https://hanziwriter.org/), created by [Chanind](h
 Enhance your Chinese learning with integrated pinyin support:
 - Type `/pinyin` following the Chinese characters to retrieve their pinyin transcription.
 - The plugin displays pinyin above or below each character, highlighting tones.
+
+### Hanzi SVG
+Used to export characters to Anki and to have only the character images
+- Type `/hanzi image 🈚` in any block
+- Leave the block (click elsewhere)
 
 ---
 
