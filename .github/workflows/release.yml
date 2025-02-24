@@ -54,9 +54,7 @@ jobs:
         cp package.json release/
         cp README.md release/
         cp logo.gif release/
-        cp demo.gif release/
-        cp demo_pinyin.gif release/
-        cp demo_hanzi_svg.gif release/
+        cp -r demo/* release/demo/
         cp LICENSE release/ || true
         
     - name: Create ZIP
