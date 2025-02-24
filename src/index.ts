@@ -5,6 +5,7 @@ import pinyin from "pinyin";
 import {getTextHanzi} from "./utils/utils.ts";
 import {provideStyles} from "./utils/logseq/styles.ts"
 import { hanziHtml } from "./utils/hanziSvg.ts";
+import { settingsConfig } from "./utils/settings/settingsConfig.ts";
 
 var padding = 5;
 var width = 200;
@@ -17,6 +18,8 @@ var writerIsQuizMap = {};  // Track quiz state for each writer
 function main() {
 
   provideStyles(width, height);
+
+  logseq.useSettingsSchema(settingsConfig);
 
   const genRandomStr = () => Math.random().
     toString(36).
