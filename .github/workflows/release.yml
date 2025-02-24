@@ -50,6 +50,7 @@ jobs:
       run: |
         mkdir release
         mkdir release/dist
+        mkdir release/demo
         cp -r dist/* release/dist/
         cp package.json release/
         cp README.md release/
