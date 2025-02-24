@@ -1,14 +1,14 @@
 import "@logseq/libs"
 import HanziWriter from "hanzi-writer";
-import pinyin from "pinyin";
 
-import {getTextHanzi} from "./utils/utils.ts";
-import {provideStyles} from "./utils/logseq/styles.ts"
-import { hanziHtml } from "./utils/hanziSvg.ts";
+import { provideStyles } from "./utils/logseq/styles"
+import { settingsConfig } from "./utils/settings/settingsConfig"
+import { createCardUI } from "./UI/cardUI"
+import { createHanziQuizMacro, createHanziImage, createPinyin } from "./utils/commandUtils/editorCommands"
 
 var padding = 5;
-var width = 200;
-var height = 200;
+var hanziQuizSize = 150;
+export var hanziSVGSize = 150;
 var writerHashMap = {};
 var writerIsQuizMap = {};  // Track quiz state for each writer
 
@@ -16,42 +16,30 @@ var writerIsQuizMap = {};  // Track quiz state for each writer
 
 function main() {
 
-  provideStyles(width, height);
+  logseq.useSettingsSchema(settingsConfig);
+  hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;
+  hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
 
-  const genRandomStr = () => Math.random().
-    toString(36).
-    replace(/[^a-z]+/g, '').
-    substr(0, 5);
 
-  try {
-    // Test if we can create a HanziWriter instance
-    var testWriter = HanziWriter.create(document.createElement('div'), '测', {
-      width: 100,
-      height: 100
-    });
-    if (testWriter) {
-      logseq.UI.showMsg('Hanzi Writer Plugin Loaded Successfully');
-    }
-  } catch (error) {
-    console.error('HanziWriter initialization failed:', error);
-    logseq.UI.showMsg('Hanzi Writer Plugin Failed to Load: ' + error.message);
-    return;
-  }
+  provideStyles(hanziQuizSize, hanziQuizSize);
+
+ 
+
+  logseq.onSettingsChanged(() => {
+
+    hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;
+    hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
+  });
 
 
   logseq.Editor.registerSlashCommand(
     'Hanzi quiz 🈚',
-    async () => {
-      const str = genRandomStr();
-      await logseq.Editor.insertAtEditingCursor(
-        `{{renderer :hanzi-quiz_${str}_}}`
-      );
-    }
+    createHanziQuizMacro
   );
 
   // Handle macro renderer
   logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
-    const [type, character] = payload.arguments;
+    const [type, _] = payload.arguments;
     if (!type?.startsWith(':hanzi-quiz_')) return;
 
     const quizId = type.split('_')[1]?.trim();
@@ -113,38 +101,14 @@ function main() {
     renderQuiz(hanziArray, quizId);
   });
 
-
   logseq.Editor.registerSlashCommand(
     "Hanzi image 🈚",
-    
-    async () => {
-      const hanzi = await getTextHanzi();
-      let html = "@@html: <div style='display: flex; flex-direction: row;'>";
-      for (const char of hanzi) {
-        html += await hanziHtml(char, 200, "#888");
-      }
-      
-      html.replace(/\n/g, '');
-      if (html != "@@html: <div style='display: flex; flex-direction: row;'>")
-        logseq.Editor.insertAtEditingCursor(html + "</div> @@");
-    }
+    createHanziImage
   );
-  
 
   logseq.Editor.registerSlashCommand(
     'pinyin',
-    async () => {
-
-      const text = await getTextHanzi();
-      
-      // Call pinyin synchronously
-      const pinyinResult = pinyin(text, {
-        style: pinyin.STYLE_TONE
-      });
-
-      logseq.UI.showMsg(text + " -> " + pinyinResult);
-      logseq.Editor.insertAtEditingCursor(pinyinResult.join(' '));
-    }
+    createPinyin
   );
 
   logseq.Editor.registerSlashCommand(
@@ -153,10 +117,31 @@ function main() {
       logseq.Editor.insertAtEditingCursor(`exclude-from-graph-view:: true`);
     }
   );
+
+  logseq.Editor.registerSlashCommand(
+    'Hanzi Card',
+    async () => {
+      const cardUI = createCardUI();
+      // Get cursor position for positioning the popup
+      const { left, top, rect } = await logseq.Editor.getEditingCursorPosition();
+      
+      // Position the card
+      Object.assign(cardUI.style, {
+        top: top + rect.top + 'px',
+        left: left + rect.left + 'px',
+      });
+      
+      // Add the card to the document
+      const appElement = document.getElementById('app');
+      if (appElement) {
+        appElement.appendChild(cardUI);
+      }
+      
+      // Show the UI
+      logseq.showMainUI();
+    }
+  );
 }
-
-
-
 
 
 async function renderQuiz(hanziArray, quizId) {
@@ -173,8 +158,8 @@ async function renderQuiz(hanziArray, quizId) {
     }
 
     const writer = HanziWriter.create(quizEl, hanzi, {
-      width: height,
-      height: width,
+      width: hanziQuizSize,
+      height: hanziQuizSize,
       padding: padding,
       renderer: 'canvas',
       showHintAfterMisses: 3,
@@ -190,4 +175,5 @@ async function renderQuiz(hanziArray, quizId) {
 // bootstrap
 if (window.logseq) {
   logseq.ready(main).catch(console.error);
+  logseq.UI.showMsg("Hanzi Writer loaded successfully!");
 }

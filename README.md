@@ -4,15 +4,19 @@ A Logseq plugin that integrates [HanziWriter](https://hanziwriter.org/) to provi
 
 ### 🎥 Demo
 
-![demo](./demo.gif)
+![demo](./demo/demo.gif)
 
 #### Pinyin demo
 
-![pinyin_demo](./demo_pinyin.gif)
+![pinyin_demo](./demo/demo_pinyin.gif)
 
 #### Hanzi svg demo
 
-![Hanzi SVG demo](./demo_hanzi_svg.gif)
+![Hanzi SVG demo](./demo/demo_hanzi_svg.gif)
+
+#### Hanzi card demp
+
+![Hanzi card demo](./demo/demo_card.gif)
 
 ## 🙏 Credits
 
@@ -47,6 +51,12 @@ Enhance your Chinese learning with integrated pinyin support:
 Used to export characters to Anki and to have only the character images
 - Type `/hanzi image 🈚` in any block
 - Leave the block (click elsewhere)
+
+### Cards
+Use it to make card easily
+- Type `/hanzi card` in any block
+- Fill the form
+- it's all done
 
 ---
 
