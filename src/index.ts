@@ -8,8 +8,8 @@ import { hanziHtml } from "./utils/hanziSvg.ts";
 import { settingsConfig } from "./utils/settings/settingsConfig.ts";
 
 var padding = 5;
-var width = 200;
-var height = 200;
+var hanziQuizSize = 150;
+var hanziSVGSize = 150;
 var writerHashMap = {};
 var writerIsQuizMap = {};  // Track quiz state for each writer
 
@@ -17,9 +17,13 @@ var writerIsQuizMap = {};  // Track quiz state for each writer
 
 function main() {
 
-  provideStyles(width, height);
-
   logseq.useSettingsSchema(settingsConfig);
+  hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;
+  hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
+
+
+  provideStyles(hanziQuizSize, hanziQuizSize);
+  
 
   const genRandomStr = () => Math.random().
     toString(36).
@@ -54,7 +58,9 @@ function main() {
 
   // Handle macro renderer
   logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
-    const [type, character] = payload.arguments;
+    
+    hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;  
+    const [type, _] = payload.arguments;
     if (!type?.startsWith(':hanzi-quiz_')) return;
 
     const quizId = type.split('_')[1]?.trim();
@@ -120,11 +126,14 @@ function main() {
   logseq.Editor.registerSlashCommand(
     "Hanzi image 🈚",
     
+    
     async () => {
+      hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
+
       const hanzi = await getTextHanzi();
       let html = "@@html: <div style='display: flex; flex-direction: row;'>";
       for (const char of hanzi) {
-        html += await hanziHtml(char, 200, "#888");
+        html += await hanziHtml(char, hanziSVGSize, "#888");
       }
       
       html.replace(/\n/g, '');
@@ -176,8 +185,8 @@ async function renderQuiz(hanziArray, quizId) {
     }
 
     const writer = HanziWriter.create(quizEl, hanzi, {
-      width: height,
-      height: width,
+      width: hanziQuizSize,
+      height: hanziQuizSize,
       padding: padding,
       renderer: 'canvas',
       showHintAfterMisses: 3,
