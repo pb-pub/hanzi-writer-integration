@@ -24,7 +24,6 @@ function main() {
 
   provideStyles(hanziQuizSize, hanziQuizSize);
   
-
   const genRandomStr = () => Math.random().
     toString(36).
     replace(/[^a-z]+/g, '').
@@ -45,6 +44,12 @@ function main() {
     return;
   }
 
+  logseq.onSettingsChanged(() => {
+    
+  hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;
+  hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
+  }); 
+
 
   logseq.Editor.registerSlashCommand(
     'Hanzi quiz 🈚',
@@ -58,8 +63,6 @@ function main() {
 
   // Handle macro renderer
   logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
-    
-    hanziQuizSize = logseq.settings?.["hanziQuizSize"] ?? 150;  
     const [type, _] = payload.arguments;
     if (!type?.startsWith(':hanzi-quiz_')) return;
 
@@ -128,7 +131,6 @@ function main() {
     
     
     async () => {
-      hanziSVGSize = logseq.settings?.["hanziSVGSize"] ?? 150;
 
       const hanzi = await getTextHanzi();
       let html = "@@html: <div style='display: flex; flex-direction: row;'>";
@@ -155,7 +157,7 @@ function main() {
       });
 
       logseq.UI.showMsg(text + " -> " + pinyinResult);
-      logseq.Editor.insertAtEditingCursor(pinyinResult.join(' '));
+      logseq.Editor.insertAtEditingCursor(pinyinResult.join(' '));  
     }
   );
 
