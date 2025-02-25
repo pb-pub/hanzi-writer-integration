@@ -125,10 +125,24 @@ function main() {
       // Get cursor position for positioning the popup
       const { left, top, rect } = await logseq.Editor.getEditingCursorPosition();
       
+      // Get viewport dimensions
+      const viewportHeight = window.innerHeight;
+      console.log(viewportHeight);
+      const cardHeight = 400; // Approximate height of the card UI
+
+      // Calculate positions
+      let cardTop = top + rect.top;
+      let cardLeft = left + rect.left;
+      
+      // Adjust vertical position if card would extend below viewport
+      if (cardTop + cardHeight > viewportHeight) {
+        cardTop = viewportHeight - cardHeight;
+      }
+      
       // Position the card
       Object.assign(cardUI.style, {
-        top: top + rect.top + 'px',
-        left: left + rect.left + 'px',
+        top: String(cardTop) + 'px',
+        left: String(cardLeft) + 'px',
       });
       
       // Add the card to the document

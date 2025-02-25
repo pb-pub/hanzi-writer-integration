@@ -1,4 +1,3 @@
-
 export function provideStyles(width, height) {
     logseq.provideStyle(
         `
@@ -73,6 +72,21 @@ export function provideStyles(width, height) {
         cursor: not-allowed;
         transform: none;
         box-shadow: none;
+    }
+
+    .hanzi-card {
+        position: fixed;
+        background: var(--ls-primary-background-color);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-height: calc(100vh - 20px);
+        max-width: calc(100vw - 20px);
+        overflow: auto;
     }
     `
     )
