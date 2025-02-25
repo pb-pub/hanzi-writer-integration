@@ -66,37 +66,8 @@ export function createCardUI(): HTMLElement {
 
     form.appendChild(checkboxContainer);
 
-    // Function to cleanup and close
-    const cleanup = () => {
-        document.removeEventListener('keydown', handleEscape);
-        document.removeEventListener('click', handleClickOutside);
-        card.remove();
-        logseq.hideMainUI({ restoreEditingCursor: true });
-    };
-
-    // Event handler functions
-    const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === "Escape") {
-            cleanup();
-        }
-        e.stopPropagation();
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-        if (!(e.target as HTMLElement).closest('.hanzi-card')) {
-            cleanup();
-        }
-    };
-
-    // Add close button
-    const closeButton = document.createElement('button');
-    closeButton.textContent = 'Close';
-    closeButton.addEventListener('click', cleanup);
-
-    // Add submit button
-    const submitButton = document.createElement('button');
-    submitButton.textContent = 'Submit';
-    submitButton.addEventListener('click', async () => {
+    // Function to handle form submission
+    const handleSubmit = async () => {
         // Get values using the unique IDs
         const traduction = (document.getElementById(inputs[0].id) as HTMLInputElement)?.value || '';
         const hanzi = (document.getElementById(inputs[1].id) as HTMLInputElement)?.value || '';
@@ -161,7 +132,47 @@ export function createCardUI(): HTMLElement {
         }
 
         cleanup();
-    });
+    };
+
+    // Function to cleanup and close
+    const cleanup = () => {
+        document.removeEventListener('keydown', handleEscape);
+        document.removeEventListener('click', handleClickOutside);
+        form.removeEventListener('keydown', handleFormKeydown);
+        card.remove();
+        logseq.hideMainUI({ restoreEditingCursor: true });
+    };
+
+    // Event handler functions
+    const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+            cleanup();
+        }
+        e.stopPropagation();
+    };
+
+    const handleFormKeydown = (e: KeyboardEvent) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+            e.preventDefault();
+            handleSubmit();
+        }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+        if (!(e.target as HTMLElement).closest('.hanzi-card')) {
+            cleanup();
+        }
+    };
+
+    // Add close button
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Close';
+    closeButton.addEventListener('click', cleanup);
+
+    // Add submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.addEventListener('click', handleSubmit);
 
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('button-container');
@@ -174,6 +185,7 @@ export function createCardUI(): HTMLElement {
     // Add event listeners
     document.addEventListener('keydown', handleEscape);
     document.addEventListener('click', handleClickOutside);
+    form.addEventListener('keydown', handleFormKeydown);
 
     return card;
 }
